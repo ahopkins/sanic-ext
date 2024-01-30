@@ -20,6 +20,7 @@ from sanic_ext.extensions.injection.registry import (
     InjectionRegistry,
 )
 from sanic_ext.extensions.logging.extension import LoggingExtension
+from sanic_ext.extensions.oas.extension import OASExtension
 from sanic_ext.extensions.openapi.builders import SpecificationBuilder
 from sanic_ext.extensions.openapi.extension import OpenAPIExtension
 from sanic_ext.utils.string import camel_to_snake
@@ -93,8 +94,9 @@ class Extend:
             extensions.extend(
                 [
                     InjectionExtension,
-                    OpenAPIExtension,
-                    HTTPExtension,
+                    # OpenAPIExtension,
+                    OASExtension,
+                    # HTTPExtension,
                     HealthExtension,
                     LoggingExtension,
                 ]

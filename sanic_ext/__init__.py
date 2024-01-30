@@ -4,6 +4,7 @@ from sanic_ext.bootstrap import Extend
 from sanic_ext.config import Config
 from sanic_ext.extensions.base import Extension
 from sanic_ext.extensions.http.cors import cors
+from sanic_ext.extensions.oas import expose as oas_experimental
 from sanic_ext.extensions.openapi import openapi
 from sanic_ext.extensions.templating.render import render
 from sanic_ext.extras.request import CountedRequest
@@ -23,4 +24,5 @@ __all__ = [
     "render",
     "serializer",
     "validate",
+    "oas_experimental",
 ]
