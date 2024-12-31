@@ -27,16 +27,16 @@ If you want to run all tests without install `dev` requirements, you can install
 pip install -e .['test']
 ```
 
-To run tests, use `test` command with `setup.py`:
+To run tests, use `pytest`:
 
 ```shell
-python setup.py test
+pytest
 ```
 
 Or, use `pytest` with customize options like:
 
 ```shell
-pytest tests/test_openapi.py --maxfail=1
+pytest tests/extensions/openapi/ --maxfail=1
 ```
 
 Furthermore, you can use `tox` to run tests with different environment configs to verify compatibility.
@@ -82,8 +82,8 @@ In `dev` requirements, some modules related to code style are already included:
 Please make sure your contribution will using the same styling tools. You can use following commands to apply them to your contributions:
 
 ```shell
-black --verbose sanic_openapi tests
-isort --recursive sanic_openapi tests
+black --verbose sanic_ext tests
+isort --recursive sanic_ext tests
 ```
 
 ## Build Document

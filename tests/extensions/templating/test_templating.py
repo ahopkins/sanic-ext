@@ -31,6 +31,14 @@ def test_default_templates():
             context={"seq": ["five", "six"]}, status=201, app=app
         )
 
+    @app.get("/4")
+    async def handler4(_):
+        response = await render(
+            "foo.html", context={"seq": ["three", "four"]}, app=app
+        )
+        response.add_cookie("test", "foobar")
+        return response
+
     _, response = app.test_client.get("/1")
     assert response.content_type == "text/html; charset=utf-8"
     assert "<li>one</li>" in response.text
@@ -46,6 +54,12 @@ def test_default_templates():
     assert "<li>five</li>" in response.text
     assert "<li>six</li>" in response.text
     assert response.status == 201
+
+    _, response = app.test_client.get("/4")
+    assert response.content_type == "text/html; charset=utf-8"
+    assert "<li>three</li>" in response.text
+    assert "<li>four</li>" in response.text
+    assert response.cookies.get("test") == "foobar"
 
 
 def test_render_from_string():
