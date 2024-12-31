@@ -12,6 +12,7 @@ from typing import (
     Tuple,
     Type,
     get_args,
+    get_origin,
     get_type_hints,
 )
 
@@ -89,7 +90,7 @@ class Constructor:
                 self.pass_kwargs = True
             if is_optional(annotation):
                 annotation = get_args(annotation)[0]
-            if not isclass(annotation):
+            if not isclass(annotation) and get_origin(annotation) is None:
                 missing.append((param, annotation))
                 continue
             if issubclass(annotation, Request):
