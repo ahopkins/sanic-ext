@@ -88,7 +88,7 @@ def test_validate_form(app):
 
 
 def test_validate_query(app):
-    @dataclass
+    @dataclass()
     class Search:
         q: str
 
@@ -112,6 +112,66 @@ def test_validate_query(app):
     assert response.status == 200
     assert response.json["is_search"]
     assert response.json["q"] == "Snoopy"
+
+
+def test_validate_query_basemodel_ignore_extra(app):
+    class Search(pydantic.BaseModel):
+        model_config = pydantic.ConfigDict(extra="ignore")
+        q: str
+
+    @app.get("/function")
+    @validate(query=Search)
+    async def handler(_, query: Search):
+        return json({"q": query.q, "is_search": isinstance(query, Search)})
+
+    class MethodView(HTTPMethodView, attach=app, uri="/method"):
+        decorators = [validate(query=Search)]
+
+        async def get(self, _, query: Search):
+            return json({"q": query.q, "is_search": isinstance(query, Search)})
+
+    _, response = app.test_client.get(
+        "/function", params={"q": "Snoopy", "extra_param": "extra value"}
+    )
+    assert response.status == 200
+    assert response.json["is_search"]
+    assert response.json["q"] == "Snoopy"
+
+    _, response = app.test_client.get(
+        "/method", params={"q": "Snoopy", "extra_param": "extra value"}
+    )
+    assert response.status == 200
+    assert response.json["is_search"]
+    assert response.json["q"] == "Snoopy"
+
+
+def test_validate_query_basemodel_forbid_extra(app):
+    class Search(pydantic.BaseModel):
+        model_config = pydantic.ConfigDict(extra="forbid")
+        q: str
+
+    @app.get("/function")
+    @validate(query=Search)
+    async def handler(_, query: Search):
+        return json({"q": query.q, "is_search": isinstance(query, Search)})
+
+    class MethodView(HTTPMethodView, attach=app, uri="/method"):
+        decorators = [validate(query=Search)]
+
+        async def get(self, _, query: Search):
+            return json({"q": query.q, "is_search": isinstance(query, Search)})
+
+    _, response = app.test_client.get(
+        "/function", params={"q": "Snoopy", "extra_param": "extra value"}
+    )
+    assert response.status == 400
+    assert "Extra inputs are not permitted" in response.json["message"]
+
+    _, response = app.test_client.get(
+        "/method", params={"q": "Snoopy", "extra_param": "extra value"}
+    )
+    assert response.status == 400
+    assert "Extra inputs are not permitted" in response.text
 
 
 class User(pydantic.BaseModel):
