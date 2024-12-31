@@ -425,9 +425,9 @@ def Component(
                     spec.add_component(field, key, value)
         elif is_pydantic(obj):
             try:
-                schema = obj.schema
+                schema = obj.model_json_schema
             except AttributeError:
-                schema = obj.__pydantic_model__.schema
+                schema = obj.__pydantic_model__.model_json_schema
             component = schema(ref_template="#/components/schemas/{model}")
             definitions = component.pop("definitions", None)
             if definitions:
