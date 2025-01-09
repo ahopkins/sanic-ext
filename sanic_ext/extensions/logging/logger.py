@@ -46,8 +46,8 @@ async def setup_server_logging(app: Sanic):
 
     for logger_name in app.config.LOGGERS:
         logger_instance = logging.getLogger(logger_name)
-        for handler in logger_instance.handlers:
-            logger_instance.removeHandler(handler)
+        # clear handlers
+        logger_instance.handlers.clear()
         logger_instance.addHandler(qhandler)
 
 
