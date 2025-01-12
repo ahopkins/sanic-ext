@@ -64,9 +64,13 @@ def blueprint_factory(config: Config):
                     if getattr(request.app.config, "SERVER_NAME", None)
                     else getattr(request.app.config, "OAS_URL_PREFIX")
                 ).rstrip("/")
+                config_uri = getattr(request.app.config, "OAS_URI_TO_CONFIG")
+                config_json = getattr(request.app.config, "OAS_URI_TO_JSON")
                 return html(
                     page.replace("__VERSION__", version)
                     .replace("__URL_PREFIX__", prefix)
+                    .replace("__URL_CONFIG__", config_uri)
+                    .replace("__URL_JSON__", config_json)
                     .replace("__HTML_TITLE__", html_title)
                     .replace("__HTML_CUSTOM_CSS__", custom_css)
                 )
