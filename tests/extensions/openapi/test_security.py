@@ -18,14 +18,12 @@ def test_secured(app: Sanic):
     @openapi.secured("foo")
     @openapi.secured({"bar": []})
     @openapi.secured(baz=[])
-    async def handler2(request):
-        ...
+    async def handler2(request): ...
 
     @app.route("/three")
     @openapi.definition(secured="foo")
     @openapi.definition(secured={"bar": []})
-    async def handler3(request):
-        ...
+    async def handler3(request): ...
 
     spec = get_path(app, "/one")
     assert {"foo": []} in spec["security"]

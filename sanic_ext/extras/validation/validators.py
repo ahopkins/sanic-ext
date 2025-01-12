@@ -27,8 +27,8 @@ def validate_body(
     except VALIDATION_ERROR as e:
         raise ValidationError(
             f"Invalid request body: {model.__name__}. Error: {e}",
-            extra={"exception": e},
-        )
+            extra={"exception": str(e)},
+        ) from None
 
 
 def _msgspec_validate_instance(model, body, allow_coerce):

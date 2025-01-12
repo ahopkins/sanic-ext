@@ -16,16 +16,13 @@ def test_schema_list():
         def show(self) -> bool:
             return True
 
-        def no_show_method(self) -> None:
-            ...
+        def no_show_method(self) -> None: ...
 
         @classmethod
-        def no_show_classmethod(self) -> None:
-            ...
+        def no_show_classmethod(self) -> None: ...
 
         @staticmethod
-        def no_show_staticmethod() -> None:
-            ...
+        def no_show_staticmethod() -> None: ...
 
     schema = Schema.make(Foo)
     serialized = schema.serialize()
@@ -56,8 +53,7 @@ def test_schema_fields():
     class Single:
         pet = Pet
 
-        class Ignore:
-            ...
+        class Ignore: ...
 
     class Multiple:
         pets = [Pet]

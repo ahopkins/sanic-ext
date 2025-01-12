@@ -438,8 +438,10 @@ class SpecificationBuilder:
 
     def _build_security(self):
         return [
-            {sec.fields["name"]: sec.fields["value"]}
-            if sec.fields["name"] is not None
-            else {}
+            (
+                {sec.fields["name"]: sec.fields["value"]}
+                if sec.fields["name"] is not None
+                else {}
+            )
             for sec in self.security
         ]

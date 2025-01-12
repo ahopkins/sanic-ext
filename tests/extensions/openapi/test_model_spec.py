@@ -81,11 +81,8 @@ class AlertResponseAttrs:
 )
 def test_pydantic_base_model(app, AlertResponse, check_alert):
     @app.get("/")
-    @openapi.definition(
-        body={"application/json": openapi.Component(AlertResponse)}
-    )
-    async def handler(_):
-        ...
+    @openapi.definition(body={"application/json": openapi.Component(AlertResponse)})
+    async def handler(_): ...
 
     spec = get_spec(app)
     alert_response_name = AlertResponse.__name__
@@ -94,9 +91,7 @@ def test_pydantic_base_model(app, AlertResponse, check_alert):
     assert spec["paths"]["/"]["get"]["requestBody"] == {
         "content": {
             "application/json": {
-                "schema": {
-                    "$ref": f"#/components/schemas/{alert_response_name}"
-                }
+                "schema": {"$ref": f"#/components/schemas/{alert_response_name}"}
             }
         }
     }
@@ -104,6 +99,6 @@ def test_pydantic_base_model(app, AlertResponse, check_alert):
 
     if check_alert:
         assert alert_name in spec["components"]["schemas"]
-        assert spec["components"]["schemas"][alert_response_name][
-            "properties"
-        ]["alert"] == {"$ref": f"#/components/schemas/{alert_name}"}
+        assert spec["components"]["schemas"][alert_response_name]["properties"][
+            "alert"
+        ] == {"$ref": f"#/components/schemas/{alert_name}"}

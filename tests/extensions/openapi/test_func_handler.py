@@ -38,14 +38,8 @@ def test_func_handlers(app: Sanic):
     spec = get_spec(app)
     paths = spec["paths"]
     assert len(paths) == 3
+    assert paths["/staticmethod"]["get"]["summary"] == "staticmethod custom summary"
+    assert paths["/classmethod"]["get"]["summary"] == "classmethod custom summary"
     assert (
-        paths["/staticmethod"]["get"]["summary"]
-        == "staticmethod custom summary"
-    )
-    assert (
-        paths["/classmethod"]["get"]["summary"] == "classmethod custom summary"
-    )
-    assert (
-        paths["/instance_method"]["get"]["summary"]
-        == "instance method custom summary"
+        paths["/instance_method"]["get"]["summary"] == "instance method custom summary"
     )

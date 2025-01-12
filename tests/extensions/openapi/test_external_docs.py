@@ -15,9 +15,7 @@ def test_external_docs(app: Sanic):
 
     @app.route("/test1")
     @openapi.definition(
-        document=ExternalDocumentation(
-            "http://example.com/more", "Find more info here"
-        )
+        document=ExternalDocumentation("http://example.com/more", "Find more info here")
     )
     async def handler1(request: Request):
         return text("ok")

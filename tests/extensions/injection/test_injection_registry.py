@@ -47,8 +47,7 @@ class Egg:
         return cls()
 
 
-class InheritedRequest(Request):
-    ...
+class InheritedRequest(Request): ...
 
 
 class Baz:

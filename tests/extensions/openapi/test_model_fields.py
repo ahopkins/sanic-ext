@@ -23,9 +23,7 @@ class FooDataclass:
     priority: int = field(
         metadata={"openapi": {"exclusiveMinimum": 1, "exclusiveMaximum": 10}}
     )
-    ident: str = field(
-        default="XXXX", metadata={"openapi": {"example": "ABC123"}}
-    )
+    ident: str = field(default="XXXX", metadata={"openapi": {"example": "ABC123"}})
 
 
 @attrs.define
@@ -58,15 +56,9 @@ if sys.version_info >= (3, 9):
         links: List[UUID]
         priority: Annotated[
             int,
-            Meta(
-                extra={
-                    "openapi": {"exclusiveMinimum": 1, "exclusiveMaximum": 10}
-                }
-            ),
+            Meta(extra={"openapi": {"exclusiveMinimum": 1, "exclusiveMaximum": 10}}),
         ]
-        ident: Annotated[
-            str, Meta(extra={"openapi": {"example": "ABC123"}})
-        ] = "XXXX"
+        ident: Annotated[str, Meta(extra={"openapi": {"example": "ABC123"}})] = "XXXX"
 
 
 models = [
@@ -84,13 +76,12 @@ if sys.version_info >= (3, 9):
 def test_models(app, Foo):
     @app.get("/")
     @openapi.definition(body={"application/json": Foo})
-    async def handler(_):
-        ...
+    async def handler(_): ...
 
     spec = get_spec(app)
-    foo_props = spec["paths"]["/"]["get"]["requestBody"]["content"][
-        "application/json"
-    ]["schema"]["properties"]
+    foo_props = spec["paths"]["/"]["get"]["requestBody"]["content"]["application/json"][
+        "schema"
+    ]["properties"]
 
     assert foo_props["links"] == {
         "title": "Links",

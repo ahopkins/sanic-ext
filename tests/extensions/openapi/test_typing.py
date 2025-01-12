@@ -6,8 +6,7 @@ import pytest
 from sanic_ext.utils.typing import contains_annotations, flat_values
 
 
-class Foo:
-    ...
+class Foo: ...
 
 
 def test_dict_values_nested():

@@ -61,8 +61,6 @@ def test_load_custom(app: Sanic):
 
 def test_load_overwrite(app: Sanic):
     app.ext.load_constants({"foo": "bar"})
-    with pytest.raises(
-        ValueError, match="A value for FOO has already been assigned"
-    ):
+    with pytest.raises(ValueError, match="A value for FOO has already been assigned"):
         app.ext.load_constants({"foo": "bar"})
     app.ext.load_constants({"foo": "bar"}, True)

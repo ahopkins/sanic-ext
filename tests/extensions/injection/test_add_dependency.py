@@ -99,8 +99,7 @@ class E:
         return cls(c, d)
 
 
-class Alpha:
-    ...
+class Alpha: ...
 
 
 class Beta:
@@ -136,9 +135,7 @@ def make_gamma_without_request(beta: Beta):
 def test_injection_not_allowed_when_ext_disabled(bare_app):
     ext = Extend(bare_app, built_in_extensions=False)
 
-    with pytest.raises(
-        SanicException, match="Injection extension not enabled"
-    ):
+    with pytest.raises(SanicException, match="Injection extension not enabled"):
         ext.add_dependency(1, 2)
 
 
@@ -197,9 +194,7 @@ def test_injection_of_object_with_constructor(app):
     async def person_details(request, person_id: PersonID, person: Person):
         request.ctx.person_id = person_id
         request.ctx.person = person
-        return text(
-            f"{person.person_id.person_id}\n{person.name}\n{person.age}"
-        )
+        return text(f"{person.person_id.person_id}\n{person.name}\n{person.age}")
 
     app.ext.add_dependency(Person, Person.create)
     app.ext.add_dependency(PersonID)

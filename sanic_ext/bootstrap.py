@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import os
+
 from types import SimpleNamespace
 from typing import Any, Callable, Dict, List, Mapping, Optional, Type, Union
 from warnings import warn
@@ -114,6 +116,8 @@ class Extend:
             started.add(ext)
 
     def _display(self):
+        if "SANIC_WORKER_IDENTIFIER" in os.environ:
+            return
         init_logs = ["Sanic Extensions:"]
         for extension in self.extensions:
             label = extension.render_label()

@@ -8,9 +8,7 @@ from sanic_ext import render
 def test_default_templates():
     app = Sanic("templating")
     app.extend(
-        config={
-            "templating_path_to_templates": Path(__file__).parent / "templates"
-        }
+        config={"templating_path_to_templates": Path(__file__).parent / "templates"}
     )
 
     @app.get("/1")
@@ -20,16 +18,12 @@ def test_default_templates():
 
     @app.get("/2")
     async def handler2(_):
-        return await render(
-            "foo.html", context={"seq": ["three", "four"]}, app=app
-        )
+        return await render("foo.html", context={"seq": ["three", "four"]}, app=app)
 
     @app.get("/3")
     @app.ext.template("foo.html")
     async def handler3(_):
-        return await render(
-            context={"seq": ["five", "six"]}, status=201, app=app
-        )
+        return await render(context={"seq": ["five", "six"]}, status=201, app=app)
 
     _, response = app.test_client.get("/1")
     assert response.content_type == "text/html; charset=utf-8"
@@ -89,13 +83,11 @@ def test_render_from_string():
 
 def test_config_templating_dir():
     app = Sanic("templating")
-    app.config.TEMPLATING_PATH_TO_TEMPLATES = (
-        Path(__file__).parent / "templates"
-    )
+    app.config.TEMPLATING_PATH_TO_TEMPLATES = Path(__file__).parent / "templates"
 
-    assert app.ext.templating.environment.get_template(
-        "foo.html"
-    ).filename == str(Path(__file__).parent / "templates" / "foo.html")
+    assert app.ext.templating.environment.get_template("foo.html").filename == str(
+        Path(__file__).parent / "templates" / "foo.html"
+    )
 
 
 def test_url_for():
@@ -115,9 +107,7 @@ def test_url_for():
 def test_default_context():
     app = Sanic("templating-from-string")
     app.extend(
-        config={
-            "templating_path_to_templates": Path(__file__).parent / "templates"
-        }
+        config={"templating_path_to_templates": Path(__file__).parent / "templates"}
     )
 
     template = r"{{ request.args.get('test') }}"

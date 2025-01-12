@@ -32,9 +32,7 @@ def test_both_body_and_query(app: Sanic):
     _, response = app.test_client.post("", params={"b": "bbb"})
     assert response.status == 400
 
-    _, response = app.test_client.post(
-        "", params={"b": "bbb"}, json={"a": "aaa"}
-    )
+    _, response = app.test_client.post("", params={"b": "bbb"}, json={"a": "aaa"})
     assert response.status == 200
     assert response.json == {
         "body": {"a": "aaa"},

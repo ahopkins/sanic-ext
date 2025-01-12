@@ -344,9 +344,11 @@ class Object(Schema):
                 fields = [
                     MsgspecAdapter(
                         name=f.name,
-                        default=MISSING
-                        if f.default in (UNSET, NODEFAULT)
-                        else f.default,
+                        default=(
+                            MISSING
+                            if f.default in (UNSET, NODEFAULT)
+                            else f.default
+                        ),
                         metadata=getattr(f.type, "extra", {}),
                     )
                     for f in msgspec_type_info(value).fields

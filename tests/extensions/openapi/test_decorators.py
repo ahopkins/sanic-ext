@@ -48,11 +48,7 @@ class BigFoo:
         (({"application/json": LittleFoo},), "application/json"),
         ((openapi.definitions.RequestBody(LittleFoo),), "*/*"),
         (
-            (
-                openapi.definitions.RequestBody(
-                    {"application/json": LittleFoo}
-                ),
-            ),
+            (openapi.definitions.RequestBody({"application/json": LittleFoo}),),
             "application/json",
         ),
     ),
@@ -60,8 +56,7 @@ class BigFoo:
 def test_body_decorator(app, args, content_type):
     @app.route("/")
     @openapi.body(*args, description="something")
-    async def handler(_):
-        ...
+    async def handler(_): ...
 
     spec = get_path(app, "/")
 
@@ -75,19 +70,14 @@ def test_body_decorator(app, args, content_type):
 
     assert schema["type"] == "object"
     assert schema["properties"]["bar"]["type"] == "object"
-    assert (
-        schema["properties"]["bar"]["properties"]["name"]["type"] == "string"
-    )
+    assert schema["properties"]["bar"]["properties"]["name"]["type"] == "string"
 
 
-@pytest.mark.parametrize(
-    "decorator", (openapi.deprecated(), openapi.deprecated)
-)
+@pytest.mark.parametrize("decorator", (openapi.deprecated(), openapi.deprecated))
 def test_deprecated_decorator(app, decorator):
     @app.route("/")
     @decorator
-    async def handler(_):
-        ...
+    async def handler(_): ...
 
     spec = get_path(app, "/")
     assert spec["deprecated"]
@@ -96,8 +86,7 @@ def test_deprecated_decorator(app, decorator):
 def test_description_decorator(app):
     @app.route("/")
     @openapi.description("foo")
-    async def handler(_):
-        ...
+    async def handler(_): ...
 
     spec = get_path(app, "/")
     assert spec["description"] == "foo"
@@ -107,18 +96,13 @@ def test_description_decorator(app):
     "args",
     (
         ("http://example.com/docs",),
-        (
-            openapi.definitions.ExternalDocumentation(
-                "http://example.com/docs"
-            ),
-        ),
+        (openapi.definitions.ExternalDocumentation("http://example.com/docs"),),
     ),
 )
 def test_document_decorator(app, args):
     @app.route("/")
     @openapi.document(*args)
-    async def handler(_):
-        ...
+    async def handler(_): ...
 
     spec = get_path(app, "/")
     assert spec["externalDocs"]["url"] == "http://example.com/docs"
@@ -135,8 +119,7 @@ def test_document_decorator(app, args):
 def test_exclude_decorator(app, decorator, excluded):
     @app.route("/")
     @decorator
-    async def handler(_):
-        ...
+    async def handler(_): ...
 
     if excluded:
         with pytest.raises(KeyError):
@@ -148,8 +131,7 @@ def test_exclude_decorator(app, decorator, excluded):
 def test_operation_decorator(app):
     @app.route("/")
     @openapi.operation("foo")
-    async def handler(_):
-        ...
+    async def handler(_): ...
 
     spec = get_path(app, "/")
     assert spec["operationId"] == "foo"
@@ -176,9 +158,7 @@ def test_operation_decorator(app):
         ),
         (
             openapi.parameter(
-                parameter=openapi.definitions.Parameter(
-                    "foobar", deprecated=True
-                )
+                parameter=openapi.definitions.Parameter("foobar", deprecated=True)
             ),
             {
                 "name": "foobar",
@@ -201,8 +181,7 @@ def test_operation_decorator(app):
 def test_parameter_decorator(app, decorator, expected):
     @app.route("/")
     @decorator
-    def handler_one(_):
-        ...
+    def handler_one(_): ...
 
     parameters = get_path(app, "/")["parameters"]
     assert parameters[0] == expected
@@ -246,9 +225,7 @@ def test_parameter_decorator(app, decorator, expected):
             },
         ),
         (
-            openapi.response(
-                content={"application/json": Bar}, description="..."
-            ),
+            openapi.response(content={"application/json": Bar}, description="..."),
             {
                 "default": {
                     "content": {
@@ -335,9 +312,7 @@ def test_parameter_decorator(app, decorator, expected):
                                     },
                                     "bar": {
                                         "type": "object",
-                                        "properties": {
-                                            "name": {"type": "string"}
-                                        },
+                                        "properties": {"name": {"type": "string"}},
                                     },
                                     "adict": {
                                         "type": "object",
@@ -345,9 +320,7 @@ def test_parameter_decorator(app, decorator, expected):
                                     },
                                     "bdict": {
                                         "type": "object",
-                                        "additionalProperties": {
-                                            "type": "boolean"
-                                        },
+                                        "additionalProperties": {"type": "boolean"},
                                     },
                                     "anything": {},
                                     "choice": {
@@ -368,8 +341,7 @@ def test_parameter_decorator(app, decorator, expected):
 def test_response_decorator(app, decorator, expected):
     @app.route("/")
     @decorator
-    def handler_one(_):
-        ...
+    def handler_one(_): ...
 
     responses = get_path(app, "/")["responses"]
     assert responses == expected
@@ -378,8 +350,7 @@ def test_response_decorator(app, decorator, expected):
 def test_summary_decorator(app):
     @app.route("/")
     @openapi.summary("foo")
-    async def handler(_):
-        ...
+    async def handler(_): ...
 
     spec = get_path(app, "/")
     assert spec["summary"] == "foo"
@@ -395,8 +366,7 @@ def test_summary_decorator(app):
 def test_tag_decorator(app, decorator, tags):
     @app.route("/")
     @decorator
-    def handler_one(_):
-        ...
+    def handler_one(_): ...
 
     spec = get_spec(app)
     for tag in tags:
@@ -409,8 +379,7 @@ def test_tag_decorator(app, decorator, tags):
 def test_definition_decorator_body_dict_w_obj(app):
     @app.route("/")
     @openapi.definition(body={"application/json": Bar})
-    async def handler(_):
-        ...
+    async def handler(_): ...
 
     body = get_path(app, "/")["requestBody"]
     assert body == {
@@ -437,8 +406,7 @@ def test_definition_decorator_body_dict_only_schema_head(app):
             }
         }
     )
-    async def handler(_):
-        ...
+    async def handler(_): ...
 
     body = get_path(app, "/")["requestBody"]
     assert body == {
@@ -456,8 +424,7 @@ def test_definition_decorator_body_dict_only_schema_head(app):
 def test_definition_decorator_body_dict_types_schema_head(app):
     @app.route("/")
     @openapi.definition(body={"application/json": {"schema": {"name": str}}})
-    async def handler(_):
-        ...
+    async def handler(_): ...
 
     body = get_path(app, "/")["requestBody"]
     assert body == {
@@ -482,8 +449,7 @@ def test_definition_decorator_body_dict_only_schema_root(app):
             }
         }
     )
-    async def handler(_):
-        ...
+    async def handler(_): ...
 
     body = get_path(app, "/")["requestBody"]
     assert body == {
@@ -501,8 +467,7 @@ def test_definition_decorator_body_dict_only_schema_root(app):
 def test_definition_decorator_body_dict_types_schema_root(app):
     @app.route("/")
     @openapi.definition(body={"application/json": {"name": str}})
-    async def handler(_):
-        ...
+    async def handler(_): ...
 
     body = get_path(app, "/")["requestBody"]
     assert body == {
@@ -520,8 +485,7 @@ def test_definition_decorator_body_dict_types_schema_root(app):
 def test_definition_decorator_httpmethodview(app):
     class View(HTTPMethodView, uri="/", attach=app):
         @openapi.definition(body={"application/json": Bar})
-        async def get(self, request):
-            ...
+        async def get(self, request): ...
 
     body = get_path(app, "/")["requestBody"]
     assert body == {
@@ -539,8 +503,7 @@ def test_definition_decorator_httpmethodview(app):
 def test_definition_decorator_body_dict_multi(app):
     @app.route("/")
     @openapi.definition(body={"application/json": Bar, "text/plain": str})
-    async def handler(_):
-        ...
+    async def handler(_): ...
 
     body = get_path(app, "/")["requestBody"]
     assert body == {
@@ -558,11 +521,8 @@ def test_definition_decorator_body_dict_multi(app):
 
 def test_definition_decorator_body_request_body(app):
     @app.route("/")
-    @openapi.definition(
-        body=openapi.definitions.RequestBody(str, required=True)
-    )
-    async def handler(_):
-        ...
+    @openapi.definition(body=openapi.definitions.RequestBody(str, required=True))
+    async def handler(_): ...
 
     body = get_path(app, "/")["requestBody"]
     assert body == {
@@ -574,8 +534,7 @@ def test_definition_decorator_body_request_body(app):
 def test_definition_decorator_body_model(app):
     @app.route("/")
     @openapi.definition(body=Bar)
-    async def handler(_):
-        ...
+    async def handler(_): ...
 
     body = get_path(app, "/")["requestBody"]
     assert body == {
@@ -593,8 +552,7 @@ def test_definition_decorator_body_model(app):
 def test_definition_decorator_deprecated(app):
     @app.route("/")
     @openapi.definition(deprecated=True)
-    async def handler(_):
-        ...
+    async def handler(_): ...
 
     assert get_path(app, "/")["deprecated"]
 
@@ -602,8 +560,7 @@ def test_definition_decorator_deprecated(app):
 def test_definition_decorator_description(app):
     @app.route("/")
     @openapi.definition(description="foo")
-    async def handler(_):
-        ...
+    async def handler(_): ...
 
     assert get_path(app, "/")["description"] == "foo"
 
@@ -611,8 +568,7 @@ def test_definition_decorator_description(app):
 def test_definition_decorator_document_string(app):
     @app.route("/")
     @openapi.definition(document="foo")
-    async def handler(_):
-        ...
+    async def handler(_): ...
 
     assert get_path(app, "/")["externalDocs"] == {"url": "foo"}
 
@@ -622,8 +578,7 @@ def test_definition_decorator_document_obj(app):
     @openapi.definition(
         document=openapi.definitions.ExternalDocumentation("foo", "bar")
     )
-    async def handler(_):
-        ...
+    async def handler(_): ...
 
     assert get_path(app, "/")["externalDocs"] == {
         "url": "foo",
@@ -634,8 +589,7 @@ def test_definition_decorator_document_obj(app):
 def test_definition_decorator_operation(app):
     @app.route("/")
     @openapi.definition(operation="foo")
-    async def handler(_):
-        ...
+    async def handler(_): ...
 
     assert get_path(app, "/")["operationId"] == "foo"
 
@@ -643,8 +597,7 @@ def test_definition_decorator_operation(app):
 def test_definition_decorator_parameter_string(app):
     @app.route("/")
     @openapi.definition(parameter="foo")
-    async def handler(_):
-        ...
+    async def handler(_): ...
 
     parameters = get_path(app, "/")["parameters"]
     assert {
@@ -657,8 +610,7 @@ def test_definition_decorator_parameter_string(app):
 def test_definition_decorator_parameter_dict(app):
     @app.route("/")
     @openapi.definition(parameter={"name": "foo"})
-    async def handler(_):
-        ...
+    async def handler(_): ...
 
     parameters = get_path(app, "/")["parameters"]
     assert {
@@ -673,8 +625,7 @@ def test_definition_decorator_parameter_obj(app):
     @openapi.definition(
         parameter=openapi.definitions.Parameter("foo", description="bar")
     )
-    async def handler(_):
-        ...
+    async def handler(_): ...
 
     parameters = get_path(app, "/")["parameters"]
     assert {
@@ -688,8 +639,7 @@ def test_definition_decorator_parameter_obj(app):
 def test_definition_decorator_parameter_string_multi(app):
     @app.route("/")
     @openapi.definition(parameter=["foo", "bar"])
-    async def handler(_):
-        ...
+    async def handler(_): ...
 
     parameters = get_path(app, "/")["parameters"]
     assert {
@@ -709,8 +659,7 @@ def test_definition_decorator_parameter_dict_multi(app):
     @openapi.definition(
         parameter=[{"name": "foo"}, {"name": "bar", "location": "header"}]
     )
-    async def handler(_):
-        ...
+    async def handler(_): ...
 
     parameters = get_path(app, "/")["parameters"]
     assert {
@@ -733,8 +682,7 @@ def test_definition_decorator_parameter_obj_multi(app):
             openapi.definitions.Parameter("bar"),
         ]
     )
-    async def handler(_):
-        ...
+    async def handler(_): ...
 
     parameters = get_path(app, "/")["parameters"]
     assert {
@@ -752,8 +700,7 @@ def test_definition_decorator_parameter_obj_multi(app):
 def test_definition_decorator_response_dict(app):
     @app.route("/")
     @openapi.definition(response={"application/json": Bar})
-    async def handler(_):
-        ...
+    async def handler(_): ...
 
     responses = get_path(app, "/")["responses"]
     assert responses["default"] == {
@@ -772,12 +719,9 @@ def test_definition_decorator_response_dict(app):
 def test_definition_decorator_response_obj(app):
     @app.route("/")
     @openapi.definition(
-        response=openapi.definitions.Response(
-            {"application/json": Bar}, status=201
-        )
+        response=openapi.definitions.Response({"application/json": Bar}, status=201)
     )
-    async def handler(_):
-        ...
+    async def handler(_): ...
 
     responses = get_path(app, "/")["responses"]
     assert responses["201"] == {
@@ -796,8 +740,7 @@ def test_definition_decorator_response_obj(app):
 def test_definition_decorator_response_model(app):
     @app.route("/")
     @openapi.definition(response=Bar)
-    async def handler(_):
-        ...
+    async def handler(_): ...
 
     responses = get_path(app, "/")["responses"]
     assert responses["default"] == {
@@ -821,8 +764,7 @@ def test_definition_decorator_response_dict_multi(app):
             {"text/html": str},
         ]
     )
-    async def handler(_):
-        ...
+    async def handler(_): ...
 
     responses = get_path(app, "/")["responses"]
 
@@ -845,16 +787,13 @@ def test_definition_decorator_response_obj_multi(app):
     @app.route("/")
     @openapi.definition(
         response=[
-            openapi.definitions.Response(
-                {"application/json": Bar}, status=201
-            ),
+            openapi.definitions.Response({"application/json": Bar}, status=201),
             openapi.definitions.Response(
                 {"*/*": str}, status=400, description="Something bad"
             ),
         ]
     )
-    async def handler(_):
-        ...
+    async def handler(_): ...
 
     responses = get_path(app, "/")["responses"]
     assert responses["201"] == {
@@ -879,15 +818,13 @@ def test_definition_decorator_response_model_multi(app):
 
         @app.route("/")
         @openapi.definition(response=[Bar, LittleFoo])
-        async def handler(_):
-            ...
+        async def handler(_): ...
 
 
 def test_definition_decorator_summary(app):
     @app.route("/")
     @openapi.definition(summary="foo")
-    async def handler(_):
-        ...
+    async def handler(_): ...
 
     assert get_path(app, "/")["summary"] == "foo"
 
@@ -895,8 +832,7 @@ def test_definition_decorator_summary(app):
 def test_definition_decorator_tag_string(app):
     @app.route("/")
     @openapi.definition(tag="foo")
-    async def handler(_):
-        ...
+    async def handler(_): ...
 
     assert list(get_path(app, "/")["tags"]) == ["foo"]
 
@@ -904,8 +840,7 @@ def test_definition_decorator_tag_string(app):
 def test_definition_decorator_tag_obj(app):
     @app.route("/")
     @openapi.definition(tag=openapi.definitions.Tag("foo"))
-    async def handler(_):
-        ...
+    async def handler(_): ...
 
     assert list(get_path(app, "/")["tags"]) == ["foo"]
 
@@ -913,8 +848,7 @@ def test_definition_decorator_tag_obj(app):
 def test_definition_decorator_tag_string_multi(app):
     @app.route("/")
     @openapi.definition(tag=["foo", "bar"])
-    async def handler(_):
-        ...
+    async def handler(_): ...
 
     assert list(get_path(app, "/")["tags"]) == ["foo", "bar"]
 
@@ -924,7 +858,6 @@ def test_definition_decorator_tag_obj_multi(app):
     @openapi.definition(
         tag=[openapi.definitions.Tag("foo"), openapi.definitions.Tag("bar")]
     )
-    async def handler(_):
-        ...
+    async def handler(_): ...
 
     assert list(get_path(app, "/")["tags"]) == ["foo", "bar"]
